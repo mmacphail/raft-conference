@@ -99,22 +99,27 @@ export abstract class AbstractNodeAlgorithmState {
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected onBroadcastRequest(request: BroadcastRequest): void {
     // DO NOTHING
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected onVoteRequest(request: VoteRequest): void {
     // DO NOTHING
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected onVoteResponse(response: VoteResponse): void {
     // DO NOTHING
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected onLogRequest(request: LogRequest): void {
     // DO NOTHING
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected onLogResponse(response: LogResponse): void {
     // DO NOTHING
   }
@@ -138,6 +143,25 @@ export abstract class AbstractNodeAlgorithmState {
         );
         this.sendNetworkRequest(message);
       });
+  }
+
+  protected getResponseToRequest(request: VoteRequest): VoteResponseBuilder;
+  protected getResponseToRequest(request: LogRequest): LogResponseBuilder;
+  protected getResponseToRequest(
+    request: VoteRequest | LogRequest
+  ): LogResponseBuilder | VoteResponseBuilder {
+    switch (request.type) {
+      case "log-request": {
+        return LogResponseBuilder.aLogResponse().withReceiverNodeId(
+          request.senderNodeId
+        );
+      }
+      case "vote-request": {
+        return VoteResponseBuilder.aVoteResponse().withReceiverNodeId(
+          request.senderNodeId
+        );
+      }
+    }
   }
 
   protected startTimer(duration: number, label: string): Promise<void> {
